@@ -39,12 +39,29 @@ router.get('/:id', (req, res) => {
     })
     .catch((err) => res.status(500).json(err));
 });
+
 router.post('/', (req, res) => {
   // create a new tag
+  Tag.create(req.body)
+    .then((tag) => res.status(201).json(tag))
+    .catch((err) => res.status(400).json(err));
 });
 
 router.put('/:id', (req, res) => {
   // update a tag's name by its `id` value
+  Tag.update(req.body, {
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((tag) => {
+      if (!tag[0]) {
+        res.status(404).json({ message: 'No tag found with this id' });
+        return;
+      }
+      res.status(200).json(tag);
+    })
+    .catch((err) => res.status(400).json(err));
 });
 
 router.delete('/:id', (req, res) => {
